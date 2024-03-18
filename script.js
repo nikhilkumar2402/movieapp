@@ -215,7 +215,7 @@ function showMovies(data) {
 
             <div class="movie-info">
                 <h3>${title}</h3>
-                <span class="${getColor(vote_average)}">${vote_average}</span>
+                <span class="${getColor(vote_average)}">${vote_average.toFixed(2)}</span>
             </div>
 
             <div class="overview">
@@ -223,7 +223,7 @@ function showMovies(data) {
                 <h3>Overview</h3>
                 ${overview.slice(0,200)} ${overview.length < 200 ? "" : "....."}
                 <br/> 
-                <button class="know-more" id="${id}">Know More</button
+                <button class="know-more" id="${id}">Know More <i class="ri-arrow-right-line"></i></button
             </div>
         
         `
