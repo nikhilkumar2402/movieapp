@@ -211,7 +211,7 @@ function showMovies(data) {
         const movieEl = document.createElement('div');
         movieEl.classList.add('movie');
         movieEl.innerHTML = `
-             <img src="${poster_path ? IMG_URL + poster_path : "http://via.placeholder.com/1080x1580"}" alt="${title}">
+             <img src="${poster_path ? IMG_URL + poster_path : "./images/noimage.jpg"}" alt="${title}">
 
             <div class="movie-info">
                 <h3>${title}</h3>
@@ -221,7 +221,7 @@ function showMovies(data) {
             <div class="overview">
 
                 <h3>Overview</h3>
-                ${overview.slice(0,200)} ${overview.length < 200 ? "" : "....."}
+                ${overview.slice(0, 200)} ${overview.length < 200 ? "" : "....."}
                 <br/> 
                 <button class="know-more" id="${id}">Know More <i class="ri-arrow-right-line"></i></button
             </div>
@@ -239,8 +239,33 @@ function showMovies(data) {
 
 const overlayContent = document.getElementById('overlay-content');
 /* Open when someone clicks on the span element */
+
+// function openNav(movie) {
+//     let id = movie.id;
+//     fetch(BASE_URL + '/movie/' + id + '?' + API_KEY).then(res => res.json()).then(data => {
+//         console.log(data);
+//         let { poster_path, original_title, title, vote_average, overview, genres } = data
+//         if (data) {
+//             document.getElementById("myNav").style.width = "100%";
+
+//             overlayContent.innerHTML = `
+//             <img src="${poster_path ? IMG_URL + poster_path : "./images/noimage.jpg"}" alt="${title}">
+//             <h1 class="no-results">${original_title} (<span>${vote_average.toFixed(2)}</span>)</h1>
+//            <h3>${genres.map(item => `<h3>${item.name}</h3>`)}</h3>
+//             <h3>Overview</h3>
+//             ${overview}
+//             `
+
+//         }
+//     })
+// }
+
+
 function openNav(movie) {
     let id = movie.id;
+
+
+
     fetch(BASE_URL + '/movie/' + id + '/videos?' + API_KEY).then(res => res.json()).then(videoData => {
         console.log(videoData);
         if (videoData) {
@@ -255,7 +280,7 @@ function openNav(movie) {
 
                         embed.push(`
               <iframe width="560" height="315" src="https://www.youtube.com/embed/${key}" title="${name}" class="embed hide" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-          
+
           `)
 
                         dots.push(`
@@ -267,12 +292,15 @@ function openNav(movie) {
                 var content = `
         <h1 class="no-results">${movie.original_title}</h1>
         <br/>
-        
+
+         
         ${embed.join('')}
+
+
         <br/>
 
         <div class="dots">${dots.join('')}</div>
-        
+
         `
                 overlayContent.innerHTML = content;
                 activeSlide = 0;
@@ -280,6 +308,31 @@ function openNav(movie) {
             } else {
                 overlayContent.innerHTML = `<h1 class="no-results">No Results Found</h1>`
             }
+        }
+    })
+
+    fetch(BASE_URL + '/movie/' + id + '?' + API_KEY).then(res => res.json()).then(data => {
+        console.log(data);
+        let { poster_path, original_title, title, vote_average, overview, genres, release_date, tagline } = data
+        if (data) {
+            document.getElementById("myNav").style.width = "100%";
+
+            overlayContent.innerHTML += `
+            <div class="singleMovie">
+                           <div class="singleMovieLeft">
+                             <img class="singleImg" src="${poster_path ? IMG_URL + poster_path : "./images/noimage.jpg"}" alt="${title}">
+                           </div>
+                           <div class="singleMovieRight">
+                             <h1 class="singleHeading" class="no-results">${original_title} (<span class="${getColor(vote_average)}">${vote_average.toFixed(2)}</span>)</h1>
+                             <span class="releaseDate">${release_date}</span>
+                            <h2 class="singleGenres">${genres.map(item => `<span>${item.name}</span>`)}</h2>
+                            <h2 class="tagline">${tagline}</h2>
+                            <h3>Overview</h3>
+                           <p class="singleOverview">${overview}</p>
+                           </div>
+            </div>
+            `
+
         }
     })
 }
