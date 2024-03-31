@@ -293,7 +293,7 @@ function openNav(movie) {
         <h1 class="no-results">${movie.original_title}</h1>
         <br/>
 
-         
+
         ${embed.join('')}
 
 
@@ -334,6 +334,25 @@ function openNav(movie) {
             `
 
         }
+    })
+
+    fetch(BASE_URL + '/movie/' + id + '/credits' + '?' + API_KEY).then(res => res.json()).then(data => {
+        console.log(data.cast);
+        let clutter = ''
+        data.cast.forEach(item => {
+            if (item) {
+                document.getElementById("myNav").style.width = "100%";
+                let { profile_path, name } = item
+                clutter += `
+            <div class="singleCast">
+                <img class="singleImg" src="${profile_path ? IMG_URL + profile_path : "./images/noimage.jpg"}" alt="${name}">
+                <h1 class="castName">${name}</h1>                        
+            </div>
+            `
+
+            }
+        })
+        overlayContent.innerHTML += `<h2>Cast</h2> <div class="castBox"> ${clutter} </div>`
     })
 }
 
